@@ -114,8 +114,6 @@ var web_modal =
             }
         })
     },
-
-
 }
 
 module.exports = web_modal   
