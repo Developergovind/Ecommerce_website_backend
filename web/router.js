@@ -72,20 +72,10 @@ router.get("/newArrival", (req, res) => {
     })
 })
 
-router.post("/productdetails", (req, res) => {
-    var request = req.body
-
-    const rules = {
-        product_id: 'required',
-    };
-    const message = {
-        required: "Please Enter  :attr",
-    };
-    if (middleware.checkValidation(res, request, rules, message)) {
-        webmodal.getProductDetails(request, (code, message, data) => {
-            middleware.sendResponse(request, res, code, message, data)
-        })
-    }
+router.post("/productdetails/:product_id", (req, res) => {
+    webmodal.getProductDetails(req, (code, message, data) => {
+        middleware.sendResponse(req, res, code, message, data)
+    })
 })
 
 router.post("/Search", (req, res) => {

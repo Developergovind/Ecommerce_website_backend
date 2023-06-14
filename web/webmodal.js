@@ -65,11 +65,12 @@ var web_modal =
     },
 
     getProductDetails: function (request, callback) {
-        con.query("SELECT p.*,pi.product_image FROM tbl_products p join tbl_products_images pi on p.id = pi.product_id  WHERE p.id = ? group by p.id", [request.product_id], (error, result) => {
+        console.log(request.params.product_id);
+        con.query("SELECT p.*,pi.product_image FROM tbl_products p join tbl_products_images pi on p.id = pi.product_id  WHERE p.id = ? group by p.id", [request.params.product_id], (error, result) => {
             var productDetails = {};
             productDetails.productDescription = result
             if (!error && result.length > 0) {
-                con.query("SELECT pi.product_image FROM tbl_products_images pi WHERE pi.product_id = ?", [request.product_id], (error, result) => {
+                con.query("SELECT pi.product_image FROM tbl_products_images pi WHERE pi.product_id = ?", [request.params.product_id], (error, result) => {
                     if (!error && result.length > 0) {
                         productDetails.productImages = result;
                         callback(1, "Here are your products", productDetails)
@@ -85,9 +86,9 @@ var web_modal =
     },
 
     SearchProducts: function (request, callback) {
-        con.query("SELECT p.*,pi.* FROM tbl_products p  JOIN tbl_products_images  pi ON p.id = pi.product_id WHERE  p.product_name  LIKE '%" + request + " %'  GROUP BY p.id", (error, result) => {
+        con.query("SELECT p.*,pi.* FROM tbl_products p  JOIN tbl_products_images  pi ON p.id = pi.product_id WHERE  LOWER(p.product_name) LIKE '%" + request.toLowerCase().trim() + "%'  GROUP BY p.id", (error, result) => {
+            console.log("SELECT p.*,pi.* FROM tbl_products p  JOIN tbl_products_images  pi ON p.id = pi.product_id WHERE  LOWER(p.product_name) LIKE '%" + request.toLowerCase().trim() + "%'  GROUP BY p.id");
             if (!error && result.length > 0) {
-                console.log(result);
                 callback(1, "here is your data ", result)
             } else {
                 callback(0, "no data found", error)
